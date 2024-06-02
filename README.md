@@ -7,3 +7,6 @@ It creates all basic CRUD endpoints for each resource of a JSON file of your cho
 ## To Install
 
 <pre>pip install instant-json-server</pre>
+
+## To use
+<pre>instant-json-server path_to_your_json</pre>
