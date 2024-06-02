@@ -1,7 +1,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='json-server-instant',
+    name='instant_json_server',
     version='0.1',
     packages=find_packages(),
     include_package_data=True,
@@ -11,7 +11,7 @@ setup(
     author='Augustine',
     entry_points={
         'console_scripts': [
-            'json-server-auz = server.main:main',
+            'instant-json-server = server.main:main',
         ],
     },
     author_email='auzuha@example.com',
