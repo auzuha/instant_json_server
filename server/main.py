@@ -1,5 +1,5 @@
-import argparse, json, uvicorn
-from fastapi import FastAPI, HTTPException, Request
+import argparse, json, uvicorn, uuid
+from fastapi import FastAPI, HTTPException, Request, Body
 from fastapi.responses import JSONResponse
 
 global PATH
@@ -26,13 +26,31 @@ def add_entry_to_resource(request_json: dict, resource):
 			if key not in fields:
 				continue
 			data[key] = request_json[key]
+		
+		if not data.get('id', None):
+			data['id'] = str(uuid.uuid4())
+		
 		resources[resource].append(data)
-
-		update_resources_file(resources)
+		
+		update_resources_file()
 
 		return data
 	except:
 		raise HTTPException(status_code=500, detail="Internal Server Error")
+
+
+def update_entry_from_resource(resource: str, id: str, update_data: dict):
+	fields = resources[resource][0].keys()
+	data = {'id' : id}
+	for key in update_data.keys():
+		if key not in fields:
+			continue
+		data[key] = update_data[key]
+	
+	updated_resource = [item if id != item['id'] else data for item in resources[resource]]
+	resources[resource] = updated_resource
+	update_resources_file()
+	return [item for item in resources[resource] if id==item['id']]
 
 def delete_entry_from_resource(id: str, resource: str):
     updated_resource_data = [entry for entry in resources[resource] if str(entry['id']) != str(id)]
@@ -49,14 +67,25 @@ async def get_resource(resource: str):
 	return resources[resource]
 
 @app.post('/{resource}')
-async def add_resources(resource: str, request: Request):
+async def add_resources(resource: str, request: dict = Body(...)):
 	if resource not in resources.keys():
 		raise HTTPException(status_code=404, detail="Not Found")
 
-	request_json = await request.json()
+	request_json = request
+	
 	data = add_entry_to_resource(request_json, resource)
 
 	return JSONResponse(content=data, status_code=201)
+
+@app.patch('/{resource}/{id}')
+async def update_resource(resource: str, id: str, request: dict = Body(...)):
+	if resource not in resources.keys():
+		raise HTTPException(status_code=404, detail="Not Found")
+	if not [item for item in resources[resource] if item['id'] == id]:
+		raise HTTPException(status_code=404, detail="Not Found")
+	update_data = request
+	data = update_entry_from_resource(resource, id, update_data)
+	return JSONResponse(content={'success' : True}, status_code=200)
 
 @app.delete('/{resource}/{id}')
 async def delete_resource(resource: str, id: str):
