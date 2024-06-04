@@ -11,4 +11,4 @@ It creates all basic CRUD endpoints for each resource of a JSON file of your cho
 ## To use
 <pre>instant-json-server path_to_your_json</pre>
 
-## You can view the available endpoints on <pre>locahost:8000/docs</pre>
+### You can view the available endpoints on <pre>locahost:8000/docs</pre>
