@@ -40,8 +40,8 @@ def add_entry_to_resource(request_json: dict, resource):
 
 
 def update_entry_from_resource(resource: str, id: str, update_data: dict):
-	data = [item for item in resources[resource] if id == item['id']][0]
-	
+	data = [item for item in resources[resource] if id == str(item['id'])][0]
+
 	fields = resources[resource][0].keys()
 	
 	for key in update_data.keys():
@@ -49,10 +49,10 @@ def update_entry_from_resource(resource: str, id: str, update_data: dict):
 			continue
 		data[key] = update_data[key]
 	
-	updated_resource = [item if id != item['id'] else data for item in resources[resource]]
+	updated_resource = [item if id != str(item['id']) else data for item in resources[resource]]
 	resources[resource] = updated_resource
 	update_resources_file()
-	return [item for item in resources[resource] if id==item['id']]
+	return [item for item in resources[resource] if id==str(item['id'])]
 
 def delete_entry_from_resource(id: str, resource: str):
     updated_resource_data = [entry for entry in resources[resource] if str(entry['id']) != str(id)]
@@ -83,7 +83,7 @@ async def add_resources(resource: str, request: dict = Body(...)):
 async def update_resource(resource: str, id: str, request: dict = Body(...)):
 	if resource not in resources.keys():
 		raise HTTPException(status_code=404, detail="Not Found")
-	if not [item for item in resources[resource] if item['id'] == id]:
+	if not [item for item in resources[resource] if str(item['id']) == id]:
 		raise HTTPException(status_code=404, detail="Not Found")
 	update_data = request
 	data = update_entry_from_resource(resource, id, update_data)
