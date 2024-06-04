@@ -1,11 +1,11 @@
 {
     "blogs": [
         {
-            "id": 1,
-            "content": "first blog"
+            "id": "1",
+            "content": "updateeeeee"
         },
         {
-            "id": 2,
+            "id": "2",
             "content": "second blog"
         }
     ],

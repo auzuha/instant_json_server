@@ -40,8 +40,10 @@ def add_entry_to_resource(request_json: dict, resource):
 
 
 def update_entry_from_resource(resource: str, id: str, update_data: dict):
+	data = [item for item in resources[resource] if id == item['id']][0]
+	
 	fields = resources[resource][0].keys()
-	data = {'id' : id}
+	
 	for key in update_data.keys():
 		if key not in fields:
 			continue
