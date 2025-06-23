@@ -1,0 +1,35 @@
+version: 2.1
+orbs:
+  python: circleci/python@2
+jobs:
+  test-python:
+    docker:
+      - image: cimg/python:3.8-node
+    steps:
+      - checkout
+      - python/install-packages:
+          pkg-manager: pip-dist
+      - run:
+          name: Run tests
+          command: pytest --junitxml=junit.xml || ((($? == 5)) && echo 'Did not find any tests to run.')
+      - store_test_results:
+          path: junit.xml
+  build-package:
+    docker:
+      - image: cimg/python:3.8-node
+    steps:
+      - checkout
+      - run:
+          name: Create the ~/artifacts directory if it doesn't exist
+          command: mkdir -p ~/artifacts
+      - python/dist
+      - store_artifacts:
+          path: dist
+          destination: ~/artifacts
+workflows:
+  build-and-test:
+    jobs:
+      - test-python
+      - build-package:
+          requires:
+            - test-python
