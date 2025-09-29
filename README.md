@@ -1,7 +1,7 @@
 ## Instant JSON Server
 
 <p>Meant for developers who need to quickly wind up a server for a json file.
-It creates all basic CRUD endpoints for each resource of a JSON file of your choice.
+It creates all basic CRUD endpoints for each resource of a JSON file of your choice...
 </p>
 
 ## To Install
